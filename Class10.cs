@@ -1,6 +1,5 @@
 ﻿// Пример перегрузки бинарных операторов.
 using System;
-using System.Reflection.Metadata.Ecma335;
 // Класс для хранения трехмерных координат.
 class ThreeD
 {

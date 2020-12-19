@@ -242,34 +242,17 @@ namespace c30_test
 
         static void Main()
         {
-
+            // извлечение атрибута из свойства того же класса, в котором определён извлекающий метод
             var t = typeof(AttributeTest).GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
             NameAttribute attr = (NameAttribute)t[0].GetCustomAttribute(typeof(NameAttribute));
             Console.WriteLine(attr.Name);
-
-
-
-            /*
-            AttributeTest at = new AttributeTest();
-            Type t = typeof(AttributeTest);
-            PropertyInfo[] pi = at.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic);
-            NameAttribute attr = (NameAttribute)pi[0].GetCustomAttribute(typeof(NameAttribute));
-            Console.WriteLine(attr.Name);
-            */
-            /*
-            Type t = typeof(Fields);
-            PropertyInfo[] pi = t.GetProperties();
-            //NameAttribute attr = (NameAttribute)pi[0].GetCustomAttribute(typeof(NameAttribute));
-            //Console.WriteLine(attr.Name);
-            Console.WriteLine(pi[0].Name);
-            */
-            /*Fields f = new Fields();
-            Type t = f.GetType();
-            PropertyInfo[] pi = t.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic);
-            NameAttribute attr = (NameAttribute)pi[0].GetCustomAttribute(typeof(NameAttribute));
-            Console.WriteLine(attr.Name);
-            */
-
+            
+            // извлечение атрибута из свойства экзепляра
+            Fields f = new Fields();
+            Type t2 = f.GetType();
+            PropertyInfo[] pi = t2.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic);
+            NameAttribute attr2 = (NameAttribute)pi[0].GetCustomAttribute(typeof(NameAttribute));
+            Console.WriteLine(attr2.Name);
 
         }
     }
