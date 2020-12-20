@@ -34,10 +34,9 @@ namespace Study
                             AddContact();
                             break;
 
-                        //case '2':
-                        //    Console.WriteLine("Введите имя контакта: ");
-                        //    plist.RemoveContact(Console.ReadLine());
-                        //    break;
+                        case '2':
+                            DeleteContact();
+                            break;
 
                         case '3':
                             ShowContact();
@@ -68,6 +67,19 @@ namespace Study
                     WriteLine("ОШИБКА: " + ex.Message);
                     WriteLine();
                 }
+            }
+        }
+
+        private void DeleteContact() {
+            Console.Write("Введите имя: ");
+            string name = Console.ReadLine();
+            Validate.IsNotEmpty(name, "Не введено имя.");
+
+            if (phoneNumbers.RemoveContact(name)) {
+                WriteLine("Удалено.");
+            }
+            else {
+                WriteLine("Контакт не найден.");
             }
         }
 
@@ -133,7 +145,7 @@ namespace Study
             } else if (phoneNumberType == typeof(Friend)) {
                 PhoneNumber phoneNumber = CreatePhoneNumber(typeof(PhoneNumber));
                 Console.Write("Рабочий? (+/-): ");
-                bool isWorkNumber = Console.ReadLine() == "+";
+                bool isWorkNumber = Console.ReadKey().KeyChar == '+';
                 return new Friend(phoneNumber.Number, phoneNumber.Name, isWorkNumber);
             } else if (phoneNumberType == typeof(Colleague)) {
                 PhoneNumber phoneNumber = CreatePhoneNumber(typeof(PhoneNumber));
