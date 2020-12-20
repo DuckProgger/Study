@@ -375,28 +375,19 @@ namespace c30_6
     // если имя или номер телефона не найдены.
     class NotFoundException : Exception
     {
-        /* Реализовать все конструкторы класса Exception.
-        Эти конструкторы выполняют вызов конструктора базового класса.
-        Класс NotFoundException ничем не дополняет класс Exception и
-        поэтому не требует никаких дополнительных действий. */
         public NotFoundException() : base() { }
-        public NotFoundException(string str) : base(str) { }
-        public NotFoundException(
-        string str, Exception inner) : base(str, inner) { }
-        protected NotFoundException(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext sc) : base(si, sc) { }
     }
-    class EmptyException : Exception
+    class EmptyFieldException : Exception
     {
-        /* Реализовать все конструкторы класса Exception.
-        Эти конструкторы выполняют вызов конструктора базового класса.
-        Класс NotFoundException ничем не дополняет класс Exception и
-        поэтому не требует никаких дополнительных действий. */
-        public EmptyException() : base() { }
-        public EmptyException(string str) : base(str) { }
-        public EmptyException(
-        string str, Exception inner) : base(str, inner) { }
-        protected EmptyException(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext sc) : base(si, sc) { }
+        public EmptyFieldException() : base() { }
     }
+
+    class EmptyListException : Exception
+    {
+        public EmptyListException() : base() { }
+    }
+
+
     // Базовый класс, в котором хранятся имя абонента и номер его телефона.
     class PhoneNumber
     {
@@ -453,6 +444,10 @@ namespace c30_6
         // Найти и возвратить сведения о телефоне по заданному имени.
         public T FindByName(string name)
         {
+            if (end == 0)
+            {
+                throw new EmptyListException();
+            }
             for (int i = 0; i < end; i++)
             {
                 // Имя может использоваться, потому что его свойство Name
@@ -467,6 +462,10 @@ namespace c30_6
 
         int FindByName2(string name)
         {
+            if (end == 0)
+            {
+                throw new EmptyListException();
+            }
             for (int i = 0; i < end; i++)
             {
                 // Имя может использоваться, потому что его свойство Name
@@ -481,6 +480,10 @@ namespace c30_6
         // Найти и возвратить сведения о телефоне по заданному номеру.
         public T FindByNumber(string number)
         {
+            if(end == 0)
+            {
+                throw new EmptyListException();
+            }
             for (int i = 0; i < end; i++)
             {
                 // Номер телефона также может использоваться, поскольку
@@ -506,7 +509,45 @@ namespace c30_6
             }
             catch (NotFoundException)
             {
-                Console.WriteLine("Контакт не найден");
+                throw new NotFoundException();
+            }
+        }
+
+        public void RenameContact(string name)
+        {
+            try
+            {
+                int number = FindByName2(name);
+                Console.WriteLine("Новое имя: ");
+                string newName = Console.ReadLine();
+                phList[number].Name = newName;
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException();
+            }
+            catch (EmptyListException)
+            {
+                throw new EmptyListException();
+            }
+        }
+
+        public void ChangePhoneContact(string name)
+        {
+            try
+            {
+                int number = FindByName2(name);
+                Console.WriteLine("Новый номер: ");
+                string newPhone = Console.ReadLine();
+                phList[number].Number = newPhone;
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException();
+            }
+            catch (EmptyListException)
+            {
+                throw new EmptyListException();
             }
         }
 
@@ -529,10 +570,12 @@ namespace c30_6
             while (true)
             {
                 Console.WriteLine("Команды:");
-                Console.WriteLine("+: добавить контакт");
-                Console.WriteLine("-: удалить контакт");
-                Console.WriteLine("s: показать контакт");
-                Console.WriteLine("c: показать количество контактов");
+                Console.WriteLine("1: добавить контакт");
+                Console.WriteLine("2: удалить контакт");
+                Console.WriteLine("3: показать контакт");
+                Console.WriteLine("4: изменить имя контакта");
+                Console.WriteLine("5: изменить номер контакта");
+                Console.WriteLine("6: показать количество контактов");
                 Console.WriteLine("ESC: выход");
 
                 char cmd = Console.ReadKey().KeyChar;
@@ -541,21 +584,29 @@ namespace c30_6
                 {
                     switch (cmd)
                     {
-                        case '+':
+                        case '1':
                             if (!AddFriend(plist))
                             {
                                 return;
                             }
                             break;
-                        case '-':
+                        case '2':
                             Console.WriteLine("Введите имя контакта: ");
                             plist.RemoveContact(Console.ReadLine());
                             break;
-                        case 's':
+                        case '3':
                             Console.WriteLine("Введите имя контакта: ");
                             Show(plist, Console.ReadLine());
                             break;
-                        case 'c':
+                        case '4':
+                            Console.WriteLine("Введите имя контакта: ");
+                            plist.RenameContact(Console.ReadLine());
+                            break;
+                        case '5':
+                            Console.WriteLine("Введите имя контакта: ");
+                            plist.ChangePhoneContact(Console.ReadLine());
+                            break;
+                        case '6':
                             plist.ShowCountContact();
                             break;
                         case (char)27:
@@ -566,12 +617,20 @@ namespace c30_6
                     }
                     Console.WriteLine();
                 }
-                catch (EmptyException)
+                catch (EmptyFieldException)
                 {
                     Console.WriteLine("Пустое поле\n");
                 }
+                catch (EmptyListException)
+                {
+                    Console.WriteLine("Пустой список контактов\n");
+                }
+                catch (NotFoundException)
+                {
+                    Console.WriteLine("Контакт не найден\n");
+                }
             }
-            
+
 
         }
 
@@ -584,10 +643,10 @@ namespace c30_6
             bool work;
             Console.Write("Имя: ");
             name = Console.ReadLine();
-            if (name == "") throw new EmptyException();
+            if (name == "") throw new EmptyFieldException();
             Console.Write("Телефон: ");
             phone = Console.ReadLine();
-            if (phone == "") throw new EmptyException();
+            if (phone == "") throw new EmptyFieldException();
             Console.Write("Рабочий? (+/-) ");
             work = Console.ReadKey().KeyChar == '+';
             Console.WriteLine();
@@ -608,16 +667,22 @@ namespace c30_6
 
         static void Show(PhoneList<Friend> list, string name)
         {
-            Friend contact = list.FindByName(name);
-            Console.Write("Имя " + contact.Name + " Тел. " + contact.Number);
-            if (contact.IsWorkNumber)
+            try
             {
-                Console.WriteLine(" (рабочий)");
+                Friend contact = list.FindByName(name);
+                Console.Write("Имя " + contact.Name + " Тел. " + contact.Number);
+                if (contact.IsWorkNumber)
+                {
+                    Console.WriteLine(" (рабочий)");
+                }
+                else Console.WriteLine();
             }
-            else Console.WriteLine();
-
+            catch (NotFoundException)
+            {
+                throw new NotFoundException();
+            }
         }
-
+      
     }
 }
 
