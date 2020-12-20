@@ -385,6 +385,18 @@ namespace c30_6
         string str, Exception inner) : base(str, inner) { }
         protected NotFoundException(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext sc) : base(si, sc) { }
     }
+    class EmptyException : Exception
+    {
+        /* Реализовать все конструкторы класса Exception.
+        Эти конструкторы выполняют вызов конструктора базового класса.
+        Класс NotFoundException ничем не дополняет класс Exception и
+        поэтому не требует никаких дополнительных действий. */
+        public EmptyException() : base() { }
+        public EmptyException(string str) : base(str) { }
+        public EmptyException(
+        string str, Exception inner) : base(str, inner) { }
+        protected EmptyException(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext sc) : base(si, sc) { }
+    }
     // Базовый класс, в котором хранятся имя абонента и номер его телефона.
     class PhoneNumber
     {
@@ -513,6 +525,7 @@ namespace c30_6
             // Следующий код вполне допустим, поскольку
             // класс Friend наследует от класса PhoneNumber.
             PhoneList<Friend> plist = new PhoneList<Friend>();
+
             while (true)
             {
                 Console.WriteLine("Команды:");
@@ -524,45 +537,60 @@ namespace c30_6
 
                 char cmd = Console.ReadKey().KeyChar;
                 Console.WriteLine();
-                if (cmd == '+')
+                try
                 {
-                    if (!AddFriend(plist))
+                    switch (cmd)
                     {
-                        break;
+                        case '+':
+                            if (!AddFriend(plist))
+                            {
+                                return;
+                            }
+                            break;
+                        case '-':
+                            Console.WriteLine("Введите имя контакта: ");
+                            plist.RemoveContact(Console.ReadLine());
+                            break;
+                        case 's':
+                            Console.WriteLine("Введите имя контакта: ");
+                            Show(plist, Console.ReadLine());
+                            break;
+                        case 'c':
+                            plist.ShowCountContact();
+                            break;
+                        case (char)27:
+                            return;
+                        default:
+                            Console.WriteLine("Неверная команда");
+                            break;
                     }
+                    Console.WriteLine();
                 }
-                else if (cmd == '-')
+                catch (EmptyException)
                 {
-                    Console.WriteLine("Введите имя контакта: ");
-                    plist.RemoveContact(Console.ReadLine());
-                }
-                else if(cmd == 's')
-                {
-                    Console.WriteLine("Введите имя контакта: ");
-                    Show(plist, Console.ReadLine());
-                }
-                else if (cmd == 'с')
-                {
-                    plist.ShowCountContact();
-                }
-                else if (cmd == 27)
-                {
-                    break;
+                    Console.WriteLine("Пустое поле\n");
                 }
             }
+            
+
         }
+
+
 
         static bool AddFriend(PhoneList<Friend> list)
         {
+
             string name, phone;
             bool work;
             Console.Write("Имя: ");
             name = Console.ReadLine();
+            if (name == "") throw new EmptyException();
             Console.Write("Телефон: ");
             phone = Console.ReadLine();
+            if (phone == "") throw new EmptyException();
             Console.Write("Рабочий? (+/-) ");
-
-            work = Console.ReadLine() == "+";
+            work = Console.ReadKey().KeyChar == '+';
+            Console.WriteLine();
             Friend contact = new Friend(name, phone, work);
             if (!list.Add(contact))
             {
@@ -574,7 +602,7 @@ namespace c30_6
             {
                 Console.WriteLine(" рабочий");
             }
-            Console.WriteLine("");
+            else Console.WriteLine();
             return true;
         }
 
@@ -586,6 +614,8 @@ namespace c30_6
             {
                 Console.WriteLine(" (рабочий)");
             }
+            else Console.WriteLine();
+
         }
 
     }
