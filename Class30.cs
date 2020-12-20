@@ -409,18 +409,18 @@ namespace c30_6
         public bool IsWorkNumber { get; private set; }
         // ...
     }
-    // Класс для телефонных номеров поставщиков.
-    class Supplier : PhoneNumber
+
+    class Delivery : PhoneNumber
     {
-        public Supplier(string n, string num) : base(n, num)
-        { }
+        public Delivery(string n, string num, bool wk) : base(n, num)
+        {
+            IsWorkNumber = wk;
+        }
+        public bool IsWorkNumber { get; private set; }
         // ...
     }
-    // Этот класс не наследует от класса PhoneNumber.
-    class EmailFriend
-    {
-        // ...
-    }
+
+
     // Класс PhoneList способен управлять любым видом списка телефонных номеров.
     // при условии, что он является производным от класса PhoneNumber.
     class PhoneList<T> where T : PhoneNumber
