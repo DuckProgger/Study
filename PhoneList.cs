@@ -69,5 +69,7 @@ namespace Study
             }
             return true;
         }
+
+        public T this[int index] => phList[index];
     }
 }

@@ -8,11 +8,11 @@ namespace Study
 {
     class Colleague : PhoneNumber
     {
-        public Colleague(string name, string number, bool isWorkNumber) : base(name, number)
+        public Colleague(string name, string number, string eMail) : base(name, number)
         {
-            IsWorkNumber = isWorkNumber;
+            EMail = eMail;
         }
-        public bool IsWorkNumber { get; private set; }
-        // ...
+
+        public string EMail { get; set; }
     }
 }
