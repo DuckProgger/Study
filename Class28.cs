@@ -497,9 +497,10 @@ namespace c29_8
     }
 }
 
+// Использовать класс, ничего не зная о нем заранее.
 namespace c29_9
 {
-    // Использовать класс MyClass, ничего не зная о нем заранее.
+    
     using System;
     using System.Reflection;
     class ReflectAssemblyDemo

@@ -240,7 +240,7 @@ namespace c30_test
         [Name("Володька")]
         static int Field { get; set; }
 
-        static void Main()
+        static void test()
         {
             // извлечение атрибута из свойства того же класса, в котором определён извлекающий метод
             var t = typeof(AttributeTest).GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
