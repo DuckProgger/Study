@@ -452,6 +452,20 @@ namespace c30_6
             // Имя отсутствует в списке.
             throw new NotFoundException();
         }
+
+        int FindByName2(string name)
+        {
+            for (int i = 0; i < end; i++)
+            {
+                // Имя может использоваться, потому что его свойство Name
+                // относится к членам класса PhoneNumber, который является
+                // базовым по накладываемому ограничению.
+                if (phList[i].Name == name)
+                    return i;
+            }
+            // Имя отсутствует в списке.
+            throw new NotFoundException();
+        }
         // Найти и возвратить сведения о телефоне по заданному номеру.
         public T FindByNumber(string number)
         {
@@ -467,7 +481,30 @@ namespace c30_6
             throw new NotFoundException();
         }
 
+        public void RemoveContact(string name)
+        {
+            try
+            {
+                int number = FindByName2(name);
+                end--;
+                for (int i = number; i < end; i++)
+                {
+                    phList[i] = phList[i + 1];
+                }
+            }
+            catch (NotFoundException)
+            {
+                Console.WriteLine("Контакт не найден");
+            }
+        }
+
+        public void ShowCountContact()
+        {
+            Console.WriteLine("Количество контактов: " + end);
+        }
+
     }
+
     // Продемонстрировать наложение ограничений на базовый класс.
     class UseBaseClassConstraint
     {
@@ -476,9 +513,39 @@ namespace c30_6
             // Следующий код вполне допустим, поскольку
             // класс Friend наследует от класса PhoneNumber.
             PhoneList<Friend> plist = new PhoneList<Friend>();
-            while (Console.ReadLine() == "+")
+            while (true)
             {
-                if (!AddFriend(plist))
+                Console.WriteLine("Команды:");
+                Console.WriteLine("+: добавить контакт");
+                Console.WriteLine("-: удалить контакт");
+                Console.WriteLine("s: показать контакт");
+                Console.WriteLine("c: показать количество контактов");
+                Console.WriteLine("ESC: выход");
+
+                char cmd = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                if (cmd == '+')
+                {
+                    if (!AddFriend(plist))
+                    {
+                        break;
+                    }
+                }
+                else if (cmd == '-')
+                {
+                    Console.WriteLine("Введите имя контакта: ");
+                    plist.RemoveContact(Console.ReadLine());
+                }
+                else if(cmd == 's')
+                {
+                    Console.WriteLine("Введите имя контакта: ");
+                    Show(plist, Console.ReadLine());
+                }
+                else if (cmd == 'с')
+                {
+                    plist.ShowCountContact();
+                }
+                else if (cmd == 27)
                 {
                     break;
                 }
@@ -510,7 +577,17 @@ namespace c30_6
             Console.WriteLine("");
             return true;
         }
-        
+
+        static void Show(PhoneList<Friend> list, string name)
+        {
+            Friend contact = list.FindByName(name);
+            Console.Write("Имя " + contact.Name + " Тел. " + contact.Number);
+            if (contact.IsWorkNumber)
+            {
+                Console.WriteLine(" (рабочий)");
+            }
+        }
+
     }
 }
 
