@@ -391,10 +391,10 @@ namespace c30_6
     // Базовый класс, в котором хранятся имя абонента и номер его телефона.
     class PhoneNumber
     {
-        public PhoneNumber(string n, string num)
+        public PhoneNumber(string name, string number)
         {
-            Name = n;
-            Number = num;
+            Name = name;
+            Number = number;
         }
         public string Number { get; set; }
         public string Name { get; set; }
@@ -402,7 +402,17 @@ namespace c30_6
     // Класс для телефонных номеров друзей.
     class Friend : PhoneNumber
     {
-        public Friend(string n, string num, bool wk) : base(n, num)
+        public Friend(string name, string number, bool isWorkNumber) : base(name, number)
+        {
+            IsWorkNumber = isWorkNumber;
+        }
+        public bool IsWorkNumber { get; private set; }
+        // ...
+    }
+
+    class Colleagues : PhoneNumber
+    {
+        public Colleagues(string n, string num, bool wk) : base(n, num)
         {
             IsWorkNumber = wk;
         }
@@ -410,15 +420,7 @@ namespace c30_6
         // ...
     }
 
-    class Delivery : PhoneNumber
-    {
-        public Delivery(string n, string num, bool wk) : base(n, num)
-        {
-            IsWorkNumber = wk;
-        }
-        public bool IsWorkNumber { get; private set; }
-        // ...
-    }
+    
 
 
     // Класс PhoneList способен управлять любым видом списка телефонных номеров.
@@ -633,6 +635,28 @@ namespace c30_6
 
 
         }
+
+
+        static PhoneNumber CreatePhoneNumber(Type phoneNumberType)
+        {
+            if (phoneNumberType == typeof(PhoneNumber))
+            {
+                Console.Write("Введите номер: ");
+                string number = Console.ReadLine();
+                Console.Write("Введите имя: ");
+                string name = Console.ReadLine();
+                return new PhoneNumber(number, name);
+            }
+            else if (phoneNumberType == typeof(Friend))
+            {
+                PhoneNumber phoneNumber = CreatePhoneNumber(typeof(PhoneNumber));
+                Console.WriteLine("Рабочий? (+/-): ");
+                bool isWorkNumber = Convert.ToBoolean(Console.ReadLine());
+                return new Friend(phoneNumber.Number, phoneNumber.Name, isWorkNumber);
+            }
+            throw new NotImplementedException();
+        }
+
 
 
 
