@@ -22,7 +22,7 @@ namespace Study
         }
 
         // Добавить элемент в список.
-        public void Add(T newEntry)
+        public void Add(T newEntry) 
         {
             Validate.IsTrue(HasPlace, "Нет места.");
             Validate.IsNotNull(newEntry);
