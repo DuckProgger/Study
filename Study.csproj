@@ -42,7 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class30.cs" />
+    <Compile Include="UseBaseClassConstraint.cs" />
+    <Compile Include="Colleagues.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Friend.cs" />
+    <Compile Include="PhoneList.cs" />
+    <Compile Include="PhoneNumber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
