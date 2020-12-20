@@ -424,7 +424,7 @@ namespace c30_6
     {
         T[] phList;
         int end;
-        const int count = 3;
+        const int count = 2;
         public PhoneList()
         {
             phList = new T[count];
@@ -478,20 +478,39 @@ namespace c30_6
             PhoneList<Friend> plist = new PhoneList<Friend>();
             while (Console.ReadLine() == "+")
             {
-                Friend contact = new Friend(Console.ReadLine(), Console.ReadLine(), Console.ReadLine() == "рабочий");
-                if (!plist.Add(contact))
+                if (!AddFriend(plist))
                 {
-                    Console.WriteLine("нет места");
                     break;
                 }
-                Console.Write(contact.Name + " " + contact.Number);
-                if (contact.IsWorkNumber)
-                {
-                    Console.WriteLine(" рабочий");
-                }
-                Console.WriteLine();
             }
         }
+
+        static bool AddFriend(PhoneList<Friend> list)
+        {
+            string name, phone;
+            bool work;
+            Console.Write("Имя: ");
+            name = Console.ReadLine();
+            Console.Write("Телефон: ");
+            phone = Console.ReadLine();
+            Console.Write("Рабочий? (+/-) ");
+
+            work = Console.ReadLine() == "+";
+            Friend contact = new Friend(name, phone, work);
+            if (!list.Add(contact))
+            {
+                Console.WriteLine("нет места");
+                return false;
+            }
+            Console.Write("Контакт сохранён: " + contact.Name + " " + contact.Number);
+            if (contact.IsWorkNumber)
+            {
+                Console.WriteLine(" рабочий");
+            }
+            Console.WriteLine("");
+            return true;
+        }
+        
     }
 }
 
