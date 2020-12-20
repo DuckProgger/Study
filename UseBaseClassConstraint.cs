@@ -7,20 +7,27 @@ namespace Study
     {
         static void Main()
         {
-            // Следующий код вполне допустим, поскольку
-            // класс Friend наследует от класса PhoneNumber.
-            PhoneList<Friend> plist = new PhoneList<Friend>();
+            new UseBaseClassConstraint().Run();
+        }
 
+
+        // Следующий код вполне допустим, поскольку
+        // класс Friend наследует от класса PhoneNumber.
+        private PhoneList<PhoneNumber> phoneNumbers = new PhoneList<PhoneNumber>(2);
+
+
+        public void Run()
+        {
             while (true)
             {
-                Console.WriteLine("Команды:");
-                Console.WriteLine("1: добавить контакт");
-                Console.WriteLine("2: удалить контакт");
-                Console.WriteLine("3: показать контакт");
-                Console.WriteLine("4: изменить имя контакта");
-                Console.WriteLine("5: изменить номер контакта");
-                Console.WriteLine("6: показать количество контактов");
-                Console.WriteLine("ESC: выход");
+                WriteLine("Команды:");
+                WriteLine("1: добавить контакт");
+                WriteLine("2: удалить контакт");
+                WriteLine("3: показать контакт");
+                WriteLine("4: изменить имя контакта");
+                WriteLine("5: изменить номер контакта");
+                WriteLine("6: показать количество контактов");
+                WriteLine("ESC: выход");
 
                 char cmd = Console.ReadKey().KeyChar;
                 Console.WriteLine();
@@ -29,71 +36,86 @@ namespace Study
                     switch (cmd)
                     {
                         case '1':
-                            if (!AddFriend(plist))
-                            {
-                                return;
-                            }
+                            AddContact();
                             break;
-                        case '2':
-                            Console.WriteLine("Введите имя контакта: ");
-                            plist.RemoveContact(Console.ReadLine());
-                            break;
-                        case '3':
-                            Console.WriteLine("Введите имя контакта: ");
-                            Show(plist, Console.ReadLine());
-                            break;
-                        case '4':
-                            Console.WriteLine("Введите имя контакта: ");
-                            plist.RenameContact(Console.ReadLine());
-                            break;
-                        case '5':
-                            Console.WriteLine("Введите имя контакта: ");
-                            plist.ChangePhoneContact(Console.ReadLine());
-                            break;
-                        case '6':
-                            plist.ShowCountContact();
-                            break;
-                        case (char)27:
-                            return;
+
+                        //case '2':
+                        //    Console.WriteLine("Введите имя контакта: ");
+                        //    plist.RemoveContact(Console.ReadLine());
+                        //    break;
+                        //case '3':
+                        //    Console.WriteLine("Введите имя контакта: ");
+                        //    Show(Console.ReadLine());
+                        //    break;
+                        //case '4':
+                        //    Console.WriteLine("Введите имя контакта: ");
+                        //    plist.RenameContact(Console.ReadLine());
+                        //    break;
+                        //case '5':
+                        //    Console.WriteLine("Введите имя контакта: ");
+                        //    plist.ChangePhoneContact(Console.ReadLine());
+                        //    break;
+                        //case '6':
+                        //    plist.ShowCountContact();
+                        //    break;
+                        //case (char)27:
+                        //    return;
+
                         default:
                             Console.WriteLine("Неверная команда");
                             break;
                     }
                     Console.WriteLine();
                 }
-                catch (EmptyFieldException)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Пустое поле\n");
-                }
-                catch (EmptyListException)
-                {
-                    Console.WriteLine("Пустой список контактов\n");
-                }
-                catch (NotFoundException)
-                {
-                    Console.WriteLine("Контакт не найден\n");
+                    WriteLine();
+                    WriteLine("ОШИБКА: " + ex.Message);
+                    WriteLine();
                 }
             }
-
-
         }
 
+        private void AddContact()
+        {
+            Validate.IsTrue(phoneNumbers.HasPlace, "Нет свободного места.");
 
-        static PhoneNumber CreatePhoneNumber(Type phoneNumberType)
+            WriteLine("Тип контакта:");
+            WriteLine("1 - Друзья");
+            WriteLine("2 - Коллеги");
+            char c = Console.ReadKey().KeyChar;
+            switch (c)
+            {
+                case '1':
+                    WriteLine("");
+                    phoneNumbers.Add(CreatePhoneNumber(typeof(Friend)));
+                    break;
+
+                case '2':
+                    phoneNumbers.Add(CreatePhoneNumber(typeof(Colleague)));
+                    break;
+
+                default:
+                    throw CreateUncorrectCommandException();
+            }
+        }
+
+        private PhoneNumber CreatePhoneNumber(Type phoneNumberType)
         {
             if (phoneNumberType == typeof(PhoneNumber))
             {
-                Console.Write("Введите номер: ");
-                string number = Console.ReadLine();
                 Console.Write("Введите имя: ");
                 string name = Console.ReadLine();
+                Console.Write("Введите номер: ");
+                string number = Console.ReadLine();
+                Validate.IsTrue(!ContainsLetters(number), "Номер содержит буквы.");
                 return new PhoneNumber(number, name);
             }
             else if (phoneNumberType == typeof(Friend))
             {
                 PhoneNumber phoneNumber = CreatePhoneNumber(typeof(PhoneNumber));
-                Console.WriteLine("Рабочий? (+/-): ");
-                bool isWorkNumber = Convert.ToBoolean(Console.ReadLine());
+                Console.Write("Рабочий? (+/-): ");
+                bool isWorkNumber = Console.ReadLine() == "+";
                 return new Friend(phoneNumber.Number, phoneNumber.Name, isWorkNumber);
             }
             throw new NotImplementedException();
@@ -101,54 +123,29 @@ namespace Study
 
 
 
-
-        static bool AddFriend(PhoneList<Friend> list)
+        private void WriteLine(string message = "")
         {
-
-            string name, phone;
-            bool work;
-            Console.Write("Имя: ");
-            name = Console.ReadLine();
-            if (name == "") throw new EmptyFieldException();
-            Console.Write("Телефон: ");
-            phone = Console.ReadLine();
-            if (phone == "") throw new EmptyFieldException();
-            Console.Write("Рабочий? (+/-) ");
-            work = Console.ReadKey().KeyChar == '+';
-            Console.WriteLine();
-            Friend contact = new Friend(name, phone, work);
-            if (!list.Add(contact))
-            {
-                Console.WriteLine("нет места");
-                return false;
-            }
-            Console.Write("Контакт сохранён: " + contact.Name + " " + contact.Number);
-            if (contact.IsWorkNumber)
-            {
-                Console.WriteLine(" рабочий");
-            }
-            else Console.WriteLine();
-            return true;
+            //string pad = new string(' ', level * 4);
+            Console.WriteLine(message);
         }
 
-        static void Show(PhoneList<Friend> list, string name)
+        private Exception CreateUncorrectCommandException()
         {
-            try
+            return new Exception("Введена неверная команда.");
+        }
+
+        private bool ContainsLetters(string value)
+        {
+            foreach (char c in value)
             {
-                Friend contact = list.FindByName(name);
-                Console.Write("Имя " + contact.Name + " Тел. " + contact.Number);
-                if (contact.IsWorkNumber)
+                if (char.IsLetter(c))
                 {
-                    Console.WriteLine(" (рабочий)");
+                    return true;
                 }
-                else Console.WriteLine();
             }
-            catch (NotFoundException)
-            {
-                throw new NotFoundException();
-            }
+            return false;
         }
-      
+
     }
 }
 

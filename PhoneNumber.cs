@@ -16,7 +16,9 @@ namespace Study
             Name = name;
             Number = number;
         }
+
         public string Number { get; set; }
+      
         public string Name { get; set; }
     }
 }

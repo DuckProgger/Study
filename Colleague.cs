@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Study
 {
-    class Colleagues : PhoneNumber
+    class Colleague : PhoneNumber
     {
-        public Colleagues(string n, string num, bool wk) : base(n, num)
+        public Colleague(string name, string number, bool isWorkNumber) : base(name, number)
         {
-            IsWorkNumber = wk;
+            IsWorkNumber = isWorkNumber;
         }
         public bool IsWorkNumber { get; private set; }
         // ...

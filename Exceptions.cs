@@ -21,4 +21,9 @@ namespace Study
     {
         public EmptyListException() : base() { }
     }
+
+    class UncorrectCommandException : Exception
+    {
+        public UncorrectCommandException() : base() { }
+    }
 }
