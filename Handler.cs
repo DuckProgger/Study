@@ -22,14 +22,14 @@ namespace Study
                 WriteLine("2: удалить контакт");
                 WriteLine("3: показать контакт");
                 WriteLine("4: изменить контакт");
-                // WriteLine("5: изменить номер контакта");
-                WriteLine("6: показать количество контактов");
+                WriteLine("5: показать количество контактов");
                 WriteLine("ESC: выход");
 
                 char cmd = Console.ReadKey().KeyChar;
                 Console.WriteLine();
                 try {
                     switch (cmd) {
+
                         case '1':
                             AddContact();
                             break;
@@ -46,18 +46,17 @@ namespace Study
                             ChangeContact();
                             break;
 
-                        //case '5':
-                        //    ChangeContactPhone();
-                        //    break;
-                        //case '6':
-                        //    plist.ShowCountContact();
-                        //    break;
-                        //case (char)27:
-                        //    return;
+                        case '5':
+                            ShowCountContacts();
+                            break;
+
+                        case (char)27:
+                            return;
 
                         default:
                             Console.WriteLine("Неверная команда");
                             break;
+
                     }
                     Console.WriteLine();
                 }
@@ -136,9 +135,9 @@ namespace Study
                     break;
                 case '3':
                     if (phoneNumbers[index] is Friend friend) {
-                        ChangeTypePhone(friend, index);
+                        ChangeTypePhone(friend);
                     } else if (phoneNumbers[index] is Colleague colleague) {
-                        ChangeEmail(colleague, index);
+                        ChangeEmail(colleague);
                     }
                     break;
                 default:
@@ -167,7 +166,7 @@ namespace Study
             WriteLine("Номер изменён.");
         }
 
-        private void ChangeTypePhone(Friend contactFriend, int index) {
+        private void ChangeTypePhone(Friend contactFriend) {
             WriteLine("Выберите новый тип контакта: ");
             WriteLine("1 - Личный");
             WriteLine("2 - Рабочий");
@@ -187,7 +186,7 @@ namespace Study
             WriteLine("Тип изменён.");
         }
 
-        private void ChangeEmail(Colleague contactColleague, int index) {
+        private void ChangeEmail(Colleague contactColleague) {
             Write("Введите новый E-Mail: ");
             string newEMail = Console.ReadLine();
             Validate.IsNotEmpty(newEMail, "Не введён номер телефона."); WriteLine();
@@ -196,7 +195,7 @@ namespace Study
 
             WriteLine("E-Mail изменён.");
         }
-       
+
         private void ShowContact() {
             Write("Введите имя: ");
             string name = Console.ReadLine();
@@ -206,6 +205,11 @@ namespace Study
             Validate.IsTrue(index != -1, "Имя не найдено.");
 
             WriteNumberInfo(phoneNumbers[index]);
+        }
+
+        private void ShowCountContacts() {
+            Write("Количество контактов: ");
+            Write(phoneNumbers.Count.ToString());
         }
 
         private PhoneNumber CreatePhoneNumber(Type phoneNumberType) {

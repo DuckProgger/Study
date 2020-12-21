@@ -31,11 +31,9 @@ namespace Study
             position++;
         }
 
-        public bool HasPlace =>
-           position < maxCapacity;
+        public bool HasPlace => position < maxCapacity;
 
-        public int Count => 
-            position;
+        public int Count => position;
 
         public int FindIndex(Predicate<T> match)
         {
