@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UseBaseClassConstraint.cs" />
+    <Compile Include="Handler.cs" />
     <Compile Include="Colleague.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Friend.cs" />

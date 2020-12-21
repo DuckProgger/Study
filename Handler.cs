@@ -3,10 +3,10 @@
 namespace Study
 {
     // Продемонстрировать наложение ограничений на базовый класс.
-    internal class UseBaseClassConstraint
+    internal class Handler
     {
         private static void Main() {
-            new UseBaseClassConstraint().Run();
+            new Handler().Run();
         }
 
 
@@ -46,10 +46,9 @@ namespace Study
                             ChangeContactName();
                             break;
 
-                        //case '5':
-                        //    Console.WriteLine("Введите имя контакта: ");
-                        //    plist.ChangePhoneContact(Console.ReadLine());
-                        //    break;
+                        case '5':
+                            ChangeContactPhone();
+                            break;
                         //case '6':
                         //    plist.ShowCountContact();
                         //    break;
@@ -69,6 +68,8 @@ namespace Study
                 }
             }
         }
+
+        
 
         private void DeleteContact() {
             Console.Write("Введите имя: ");
@@ -119,6 +120,22 @@ namespace Study
 
             phoneNumbers[index].Name = newName;
             WriteLine("Имя изменено.");
+        }
+
+        private void changecontactphone() {
+            write("введите имя: ");
+            string name = console.readline();
+            validate.isnotempty(name, "не введено имя.");
+
+            int index = phonenumbers.findindexbyname(name);
+            validate.istrue(index != -1, "имя не найдено.");
+
+            write("введите новый номер телефона: ");
+            string newnumber = console.readline();
+            validate.isnotempty(newnumber, "не введён номер телефона.");
+
+            phonenumbers[index].number = newnumber;
+            writeline("номер изменён.");
         }
 
         private void ShowContact() {
