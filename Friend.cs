@@ -13,7 +13,6 @@ namespace Study
         {
             IsWorkNumber = isWorkNumber;
         }
-        public bool IsWorkNumber { get; private set; }
-        // ...
+        public bool IsWorkNumber { get; set; }
     }
 }

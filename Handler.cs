@@ -21,8 +21,8 @@ namespace Study
                 WriteLine("1: добавить контакт");
                 WriteLine("2: удалить контакт");
                 WriteLine("3: показать контакт");
-                WriteLine("4: изменить имя контакта");
-                WriteLine("5: изменить номер контакта");
+                WriteLine("4: изменить контакт");
+                // WriteLine("5: изменить номер контакта");
                 WriteLine("6: показать количество контактов");
                 WriteLine("ESC: выход");
 
@@ -43,12 +43,12 @@ namespace Study
                             break;
 
                         case '4':
-                            ChangeContactName();
+                            ChangeContact();
                             break;
 
-                        case '5':
-                            ChangeContactPhone();
-                            break;
+                        //case '5':
+                        //    ChangeContactPhone();
+                        //    break;
                         //case '6':
                         //    plist.ShowCountContact();
                         //    break;
@@ -69,7 +69,7 @@ namespace Study
             }
         }
 
-        
+
 
         private void DeleteContact() {
             Console.Write("Введите имя: ");
@@ -78,8 +78,7 @@ namespace Study
 
             if (phoneNumbers.RemoveContact(name)) {
                 WriteLine("Удалено.");
-            }
-            else {
+            } else {
                 WriteLine("Контакт не найден.");
             }
         }
@@ -106,7 +105,7 @@ namespace Study
             }
         }
 
-        private void ChangeContactName() {
+        private void ChangeContact() {
             Write("Введите имя: ");
             string name = Console.ReadLine();
             Validate.IsNotEmpty(name, "Не введено имя.");
@@ -114,6 +113,43 @@ namespace Study
             int index = phoneNumbers.FindIndexByName(name);
             Validate.IsTrue(index != -1, "Имя не найдено.");
 
+            WriteLine("Что изменить?");
+            WriteLine("1 - Имя.");
+            WriteLine("2 - Номер телефона.");
+
+            if (phoneNumbers[index] is Friend) {
+                WriteLine("3 - Рабочий/личный.");
+            } else if (phoneNumbers[index] is Colleague) {
+                WriteLine("3 - E-Mail.");
+            } else {
+                throw new NotImplementedException();
+            }
+
+            char c = Console.ReadKey().KeyChar;
+            WriteLine();
+            switch (c) {
+                case '1':
+                    ChangeContactName(index);
+                    break;
+                case '2':
+                    ChangeContactPhone(index);
+                    break;
+                case '3':
+                    if (phoneNumbers[index] is Friend friend) {
+                        ChangeTypePhone(friend, index);
+                    } else if (phoneNumbers[index] is Colleague colleague) {
+                        ChangeEmail(colleague, index);
+                    }
+                    break;
+                default:
+                    throw CreateUncorrectCommandException();
+            }
+
+        }
+
+
+
+        private void ChangeContactName(int index) {
             Write("Введите новое имя: ");
             string newName = Console.ReadLine();
             Validate.IsNotEmpty(newName, "Не введено новое имя.");
@@ -122,22 +158,45 @@ namespace Study
             WriteLine("Имя изменено.");
         }
 
-        private void changecontactphone() {
-            write("введите имя: ");
-            string name = console.readline();
-            validate.isnotempty(name, "не введено имя.");
+        private void ChangeContactPhone(int index) {
+            Write("Введите новый номер телефона: ");
+            string newNumber = Console.ReadLine();
+            Validate.IsNotEmpty(newNumber, "Не введён номер телефона.");
 
-            int index = phonenumbers.findindexbyname(name);
-            validate.istrue(index != -1, "имя не найдено.");
-
-            write("введите новый номер телефона: ");
-            string newnumber = console.readline();
-            validate.isnotempty(newnumber, "не введён номер телефона.");
-
-            phonenumbers[index].number = newnumber;
-            writeline("номер изменён.");
+            phoneNumbers[index].Number = newNumber;
+            WriteLine("Номер изменён.");
         }
 
+        private void ChangeTypePhone(Friend contactFriend, int index) {
+            WriteLine("Выберите новый тип контакта: ");
+            WriteLine("1 - Личный");
+            WriteLine("2 - Рабочий");
+            char c = Console.ReadKey().KeyChar;
+            WriteLine();
+            switch (c) {
+                case '1':
+                    contactFriend.IsWorkNumber = false;
+                    break;
+                case '2':
+                    contactFriend.IsWorkNumber = true;
+                    break;
+                default:
+                    throw CreateUncorrectCommandException();
+            }
+
+            WriteLine("Тип изменён.");
+        }
+
+        private void ChangeEmail(Colleague contactColleague, int index) {
+            Write("Введите новый E-Mail: ");
+            string newEMail = Console.ReadLine();
+            Validate.IsNotEmpty(newEMail, "Не введён номер телефона."); WriteLine();
+
+            contactColleague.EMail = newEMail;
+
+            WriteLine("E-Mail изменён.");
+        }
+       
         private void ShowContact() {
             Write("Введите имя: ");
             string name = Console.ReadLine();
@@ -148,8 +207,6 @@ namespace Study
 
             WriteNumberInfo(phoneNumbers[index]);
         }
-
-
 
         private PhoneNumber CreatePhoneNumber(Type phoneNumberType) {
             if (phoneNumberType == typeof(PhoneNumber)) {
@@ -177,7 +234,7 @@ namespace Study
         private void WriteNumberInfo(PhoneNumber phoneNumber) {
             if (phoneNumber is Friend friend) {
                 if (!friend.IsWorkNumber) {
-                    WriteLine("Телефон: " + friend.Number);
+                    WriteLine("Личный телефон: " + friend.Number);
                 } else {
                     WriteLine("Рабочий телефон: " + friend.Number);
                 }
@@ -189,11 +246,11 @@ namespace Study
             }
         }
 
-
         private void Write(string message = "") {
             //string pad = new string(' ', level * 4);
             Console.Write(message);
         }
+
         private void WriteLine(string message = "") {
             //string pad = new string(' ', level * 4);
             Console.WriteLine(message);
